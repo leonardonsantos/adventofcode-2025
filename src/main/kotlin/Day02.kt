@@ -29,6 +29,33 @@ object Day02 {
         }
         return sum
     }
+
+    fun isRepeatedSequence(s: String): Boolean {
+        val len = s.length
+        for (subLen in 1..len / 2) {
+            if (len % subLen == 0) {
+                val subStr = s.take(subLen)
+                val repeatedStr = subStr.repeat(len / subLen)
+                if (repeatedStr == s) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    fun solution2(ranges: List<Range>): Long {
+        var sum: Long = 0
+        ranges.forEach { range ->
+            for (i in range.start..range.end) {
+                val valueStr = i.toString()
+                if (isRepeatedSequence(valueStr)) {
+                    sum += i
+                }
+            }
+        }
+        return sum
+    }
 }
 
 fun main() {
@@ -36,4 +63,6 @@ fun main() {
     println(input1)
     val result1 = Day02.solution1(input1)
     println("Result 1: $result1")
+    val result2 = Day02.solution2(input1)
+    println("Result 2: $result2")
 }
