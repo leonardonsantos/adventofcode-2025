@@ -76,6 +76,26 @@ class Day04 {
         }
         return count
     }
+
+    fun solution2(rolls: Rolls): Int {
+        var totalCount = 0
+        do {
+            var count = 0
+            for (i in rolls.positions.indices) {
+                for (j in rolls.positions[i].indices) {
+                    val ch = rolls.positions[i][j]
+                    if (ch == '@') {
+                        if (rolls.countAdjacentRolls(i, j) < 4) {
+                            count++
+                            rolls.positions[i][j] = '.'
+                        }
+                    }
+                }
+            }
+            totalCount += count
+        } while (count > 0)
+        return totalCount
+    }
 }
 
 fun main() {
@@ -85,4 +105,7 @@ fun main() {
 
     val result1 = Day04().solution1(input1)
     println("Solution 1: $result1")
+
+    val result2 = Day04().solution2(input1)
+    println("Solution 2: $result2")
 }
