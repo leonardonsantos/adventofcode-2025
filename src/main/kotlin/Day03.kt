@@ -52,25 +52,23 @@ object Day03 {
     fun getMaxJotage(ratings: List<Long>, length: Int, start: Int = 0): Long? {
         val count = ratings.size
         if ((length == 0) || (start >= count)) {
-            return -1L
+            return null
         }
-        var maxFirst = -1L
-        var maxJotage = -1L
+        var maxFirst: Long? = null
+        var maxJotage: Long? = null
         for (i in start until count) {
             val first = ratings[i]
-            if (first > maxFirst) {
+            if (maxFirst == null || first > maxFirst) {
                 maxFirst = first
                 val valueRest = getMaxJotage(ratings, length - 1, i + 1)
                 if (valueRest != null) {
-                    if (valueRest > -1L) {
-                        val jotage = maxFirst * (10.0.pow(length - 1).toLong()) + valueRest
-                        if (jotage > maxJotage) {
-                            maxJotage = jotage
-                        }
-                    } else if (length == 1) {
-                        if (maxFirst > maxJotage) {
-                            maxJotage = maxFirst
-                        }
+                    val jotage = maxFirst * (10.0.pow(length - 1).toLong()) + valueRest
+                    if (maxJotage == null || jotage > maxJotage) {
+                        maxJotage = jotage
+                    }
+                } else if (length == 1) {
+                    if (maxJotage == null || maxFirst > maxJotage) {
+                        maxJotage = maxFirst
                     }
                 }
             }
