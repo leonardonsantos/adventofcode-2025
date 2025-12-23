@@ -32,14 +32,29 @@ object Day05 {
         }
         return count
     }
+
+    fun solution2(input: Input): Int {
+        // FIXME: This is a naive solution, optimize later
+        val mySet = mutableSetOf<Long>()
+        for (range in input.ranges) {
+            for (id in range.start..range.end) {
+                mySet.add(id)
+            }
+        }
+        return mySet.size
+    }
 }
 
 fun main() {
-    val input = Day05.readInput("./src/main/resources/day05/input1.txt")
+    val input = Day05.readInput("./src/main/resources/day05/input_sample.txt")
     println(input)
     println()
 
     val result1 = Day05.solution1(input)
     println("Solution 1: $result1")
+    println()
+
+    val result2 = Day05.solution2(input)
+    println("Solution 2: $result2")
     println()
 }
