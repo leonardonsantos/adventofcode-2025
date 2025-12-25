@@ -48,6 +48,45 @@ object Day07 {
 
         return countSplit
     }
+
+    data class ParticleCoord(val i: Int, val j: Int)
+
+    fun runParticle(grid: Array<Array<Char>>, i: Int, j: Int, cache: HashMap<ParticleCoord, Long>): Long {
+        if (i >= grid.size - 1 || j < 0 || j >= grid[0].size) {
+            // end of the path, count one possible timeline
+            return 1
+        } else {
+            // try to go down
+            if (grid[i + 1][j] == '.' || grid[i + 1][j] == '|') {
+                return runParticle(grid, i + 1, j, cache)
+            } else if (grid[i + 1][j] == '^') {
+                if (cache.containsKey(ParticleCoord(i+1, j))) {
+                    // already computed
+                    val cachedCount = cache[ParticleCoord(i+1, j)]!!
+                    return cachedCount
+                } else {
+                    // split
+                    val countLeft = runParticle(grid, i + 1, j - 1, cache)
+                    val countRight = runParticle(grid, i + 1, j + 1, cache)
+                    cache[ParticleCoord(i+1, j)] = countLeft + countRight
+                    return countLeft + countRight
+                }
+            }
+        }
+        return 0
+    }
+
+    fun solution2(grid: Array<Array<Char>>): Long {
+        val cache = hashMapOf<ParticleCoord, Long>()
+
+        // find first 'S'
+        for (j in grid[0].indices) {
+            if (grid[0][j] == 'S') {
+                return runParticle(grid, 0, j, cache)
+            }
+        }
+        return 0
+    }
 }
 
 fun main() {
@@ -59,4 +98,9 @@ fun main() {
     Day07.printGrid(input)
     println()
     println("Solution 1: $result1")
+    println()
+
+    val result2 = Day07.solution2(input)
+    println("Solution 2: $result2")
+    println()
 }
