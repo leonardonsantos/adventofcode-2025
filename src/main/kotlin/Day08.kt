@@ -1,5 +1,6 @@
 package org.example
 
+import org.example.Day08.calculateDistances
 import java.io.File
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -94,8 +95,7 @@ object Day08 {
         return components
     }
 
-    fun solution1(coords: List<Coordinate>, connections: Int): Long {
-        val hash = calculateDistances(coords)
+    fun solution1(hash: MyHash, connections: Int): Long {
         calculateShortestConnections(hash, connections)
         val components = connectedComponents(hash)
         println("Found ${components.size} connected components")
@@ -110,6 +110,40 @@ object Day08 {
         return solution
     }
 
+    fun allConnected(hash: MyHash): Boolean {
+        val components = connectedComponents(hash)
+        return components.size == 1
+    }
+
+    fun solution2(hash: MyHash): Long {
+        var minFrom: Coordinate? = null
+        var minTo: Coordinate? = null
+
+        // FIXME: inefficient implementation
+        while(!allConnected(hash)) {
+            // find the shortest distance
+            var minDistance = Double.MAX_VALUE
+            minFrom = null
+            minTo = null
+            for ((from, mapTo) in hash.distances) {
+                for ((to, path) in mapTo) {
+                    if (!path.connected && path.distance < minDistance) {
+                        minDistance = path.distance
+                        minFrom = from
+                        minTo = to
+                    }
+                }
+            }
+            if (minFrom != null && minTo != null) {
+                // mark as connected
+                hash.distances[minFrom]?.get(minTo)?.connected = true
+                hash.distances[minTo]?.get(minFrom)?.connected = true
+            }
+        }
+
+        return minFrom!!.x.toLong() * minTo!!.x.toLong()
+    }
+
 }
 
 fun main() {
@@ -117,6 +151,13 @@ fun main() {
     println(input1)
     println()
 
-    val result1 = Day08.solution1(input1, 1000)
+    val hash = calculateDistances(input1)
+
+    val result1 = Day08.solution1(hash, 1000)
     println("Solution 1: $result1")
+    println()
+
+    val result2 = Day08.solution2(hash)
+    println("Solution 2: $result2")
+    println()
 }
